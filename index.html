@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student OS</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #121212;
+      color: white;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e1e1e;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    li {
+      margin-top: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>📚 Student OS</h1>
+
+    <!-- Tasks -->
+    <div class="card">
+      <h2>Tasks</h2>
+      <input type="text" id="taskInput" placeholder="Add a task..." />
+      <button onclick="addTask()">Add</button>
+      <ul id="taskList"></ul>
+    </div>
+
+    <!-- Timer -->
+    <div class="card">
+      <h2>Pomodoro Timer</h2>
+      <h3 id="timer">25:00</h3>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <!-- Notes -->
+    <div class="card">
+      <h2>Notes</h2>
+      <textarea id="notes" placeholder="Write notes..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    // TASKS
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const task = input.value;
+
+      if (task === "") return;
+
+      const li = document.createElement("li");
+      li.textContent = task;
+      li.onclick = () => li.remove();
+
+      document.getElementById("taskList").appendChild(li);
+      input.value = "";
+    }
+
+    // TIMER
+    let time = 1500;
+    let interval;
+
+    function startTimer() {
+      if (interval) return;
+
+      interval = setInterval(() => {
+        time--;
+        updateTimer();
+
+        if (time <= 0) clearInterval(interval);
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(interval);
+      interval = null;
+      time = 1500;
+      updateTimer();
+    }
+
+    function updateTimer() {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      document.getElementById("timer").textContent =
+        `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    }
+
+    // NOTES SAVE
+    const notes = document.getElementById("notes");
+
+    notes.addEventListener("input", () => {
+      localStorage.setItem("notes", notes.value);
+    });
+
+    window.onload = () => {
+      notes.value = localStorage.getItem("notes") || "";
+      updateTimer();
+    };
+  </script>
+
+</body>
+</html>
